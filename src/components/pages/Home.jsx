@@ -60,7 +60,7 @@ export default function Home() {
     // )
 
     const detailPane = detailBounty ? <BountyDetails handleShowFormClick={handleShowFormClick} bounty={detailBounty} /> : 'Click on a Bounty'
-    const sidePane = showForm ? <EditForm handleShowFormClick={handleShowFormClick} bounty={detailBounty} /> : detailPane
+    const sidePane = showForm ? <EditForm setBounties={setBounties} handleShowFormClick={handleShowFormClick} bounty={detailBounty} /> : detailPane
 
     return (
         <div style={{ display: 'flex' }}>   

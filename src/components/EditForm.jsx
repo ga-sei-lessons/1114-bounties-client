@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import axios from 'axios'
 
 export default function EditForm(props) {
     // state that holds the values that the user has typed
@@ -13,10 +14,37 @@ export default function EditForm(props) {
         captured: props.bounty.captured
     })
 
-    const handleSubmit = e => {
-
+    const handleSubmit = async  e => {
+        e.preventDefault()
+        try {
+            // take the form data held in state, and put req to backed with
+            // axios.put(url, { request body }, { options })4
+            await axios.put(`${process.env.REACT_APP_SERVER_URL}/bounties/${props.bounty._id}`, form)
+            // if the update succces, get /bounties to update state in parent
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/bounties`)
+            // update the page
+            props.setBounties(response.data)
+            // close the form
+            props.handleShowFormClick()
+        } catch (err) {
+            console.warn(err)
+        }
     }
 
+    const handleDeleteClick = async () => {
+        try {
+            // request the server delete the current bounty
+            await axios.delete(`${process.env.REACT_APP_SERVER_URL}/bounties/${props.bounty._id}`)
+            // if the update succces, get /bounties to update state in parent
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/bounties`)
+            // update the page
+            props.setBounties(response.data)
+            // close the form
+            props.handleShowFormClick()
+        } catch(err) {
+            console.warn(err)
+        }
+    }
     return (
         <>  
             <div>
@@ -96,6 +124,8 @@ export default function EditForm(props) {
             </div>
 
             <button onClick={props.handleShowFormClick}>Cancel</button>
+
+            <button onClick={handleDeleteClick}>Delete</button>
         </>
     )
 }
