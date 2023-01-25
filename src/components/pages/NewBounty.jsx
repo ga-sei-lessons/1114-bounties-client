@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 export default function NewBounty() {
     // state that holds the values that the user has typed
@@ -12,11 +14,23 @@ export default function NewBounty() {
         lastSeen: '',
         captured: false
     })
+    // console.log(process.env.REACT_APP_SERVER_URL)
+
+    // invoke the useVanigate hook to get a navigate funciton to use
+    const navigate = useNavigate()
 
     // submit handler function that posts the form data from state to the backend
     const handleSubmit = e => {
         e.preventDefault()
-        console.log('create a new bounty!')
+        // take the form data from the state, post it to the backend with axios
+        // axios.post(url to make a request to,{ request body }. { options })
+        axios.post(`${process.env.REACT_APP_SERVER_URL}/bounties`, form)
+            .then(response => {
+                console.log(response.data)
+                // once the backend gets back to use, navigate to the / route to see all bounties
+                navigate('/') // clicking a link for the user
+            })
+            .catch(console.warn)
     }
 // name: String
 // wantedFor: String
@@ -97,6 +111,8 @@ export default function NewBounty() {
                         onChange={() => setForm({ ...form, captured: !form.captured })}
                     />
                 </div>
+
+                <button type='submit'>Submit</button>
             </form>
         </div>
     )
