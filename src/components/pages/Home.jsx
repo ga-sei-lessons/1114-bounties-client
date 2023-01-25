@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import BountyDetails from '../BountyDetails'
+import EditForm from '../EditForm'
 
 export default function Home() {
     // store the details and list of all bounties in one state variable
     const [bounties, setBounties] = useState([]) // array of all bounties
     const [detailId, setDetailId] = useState('') // id of the last clicked bounty
+    const [showForm, setShowForm] = useState(false)
 
     // show all bounties when tha page first loads
     useEffect(() => {
@@ -19,6 +22,9 @@ export default function Home() {
         }
         fetchBounties()
     }, []) // empty dependancy array will run this use effect only once
+
+    // show/hide form event handler
+    const handleShowFormClick = () => setShowForm(!showForm)
 
     // map out our bounties, each will need a onClick that shows their detials (set their id in state)
     const bountyComponents = bounties.map(bounty => {
@@ -39,20 +45,22 @@ export default function Home() {
     const detailBounty = bounties.find(bounty => bounty._id === detailId)
     console.log(detailBounty)
 
-    // optional chainging
-    const details = (
-        <>
-            <h3>{detailBounty?.name}</h3>
+    // // optional chainging
+    // const details = (
+    //     <>
+    //         <h3>{detailBounty?.name}</h3>
 
-            <p>{detailBounty?.wantedFor}</p>
-            <p>{detailBounty?.client}</p>
-            <p>{detailBounty?.ship}</p>
-            <h3>{detailBounty?.reward}</h3>
-            <p>{detailBounty?.lastSeen}</p>
-            <p>{detailBounty?.captured ? 'has been caught' : 'not caught'}</p>
-        </>
-    )
+    //         <p>{detailBounty?.wantedFor}</p>
+    //         <p>{detailBounty?.client}</p>
+    //         <p>{detailBounty?.ship}</p>
+    //         <h3>{detailBounty?.reward}</h3>
+    //         <p>{detailBounty?.lastSeen}</p>
+    //         <p>{detailBounty?.captured ? 'has been caught' : 'not caught'}</p>
+    //     </>
+    // )
 
+    const detailPane = detailBounty ? <BountyDetails handleShowFormClick={handleShowFormClick} bounty={detailBounty} /> : 'Click on a Bounty'
+    const sidePane = showForm ? <EditForm handleShowFormClick={handleShowFormClick} bounty={detailBounty} /> : detailPane
 
     return (
         <div style={{ display: 'flex' }}>   
@@ -64,7 +72,7 @@ export default function Home() {
             <div style={{ wdith: '50vw' }}>
                 <h2>Details</h2>
 
-                {detailBounty ? details : 'Click on a Bounty'}
+                {sidePane}
             </div>
         </div>
     )
